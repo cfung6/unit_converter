@@ -1,20 +1,18 @@
+import 'dart:math' as math;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:unitconverter/unit.dart';
-import 'dart:math' as math;
 
 class ConverterScreen extends StatefulWidget {
   final List<Unit> units;
   final ColorSwatch color;
-  bool newCategory;
 
   ConverterScreen({
     @required this.units,
     @required this.color,
-    @required this.newCategory,
   })  : assert(units != null),
-        assert(color != null),
-        assert(newCategory != null);
+        assert(color != null);
 
   @override
   _ConverterScreenState createState() => _ConverterScreenState();
@@ -30,33 +28,32 @@ class _ConverterScreenState extends State<ConverterScreen> {
   TextEditingController _controller = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    if (widget.newCategory) {
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  @override
+  void didUpdateWidget(ConverterScreen old) {
+    super.didUpdateWidget(old);
+    if (widget.units[0] != old.units[0]) {
       _controller.clear();
-      _inputUnit = widget.units[0];
-      _outputUnit = widget.units[1];
-      _outputText = '';
-      _inputText = '';
-
-      _dropdownList = widget.units.map((Unit u) {
-        return DropdownMenuItem<Unit>(
-          value: u,
-          child: Text(u.name),
-        );
-      }).toList();
-      widget.newCategory = false;
+      _initialize();
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        buildInput(),
-        buildArrow(),
-        buildOutput(),
+        _buildInput(),
+        _buildArrow(),
+        _buildOutput(),
       ],
     );
   }
 
-  Widget buildInput() {
+  Widget _buildInput() {
     return Container(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -83,7 +80,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  Widget buildArrow() {
+  Widget _buildArrow() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 1.0),
       child: Row(
@@ -105,7 +102,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  Widget buildOutput() {
+  Widget _buildOutput() {
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -129,6 +126,20 @@ class _ConverterScreenState extends State<ConverterScreen> {
         ],
       ),
     );
+  }
+
+  void _initialize() {
+    _inputUnit = widget.units[0];
+    _outputUnit = widget.units[1];
+    _outputText = '';
+    _inputText = '';
+
+    _dropdownList = widget.units.map((Unit u) {
+      return DropdownMenuItem<Unit>(
+        value: u,
+        child: Text(u.name),
+      );
+    }).toList();
   }
 
   Widget _buildDropdown(bool input) {

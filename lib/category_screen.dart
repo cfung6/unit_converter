@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:unitconverter/converter_screen.dart';
@@ -63,7 +61,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   final List<Category> _categoryList = [];
   final Color _backgroundColor = Colors.lightBlue[100];
-  bool _newCategory = true;
   Category _currentCategory;
 
   @override
@@ -91,12 +88,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   void _changeCurrentCategory(Category category) {
     setState(() {
-      if (_currentCategory == category) {
-        _newCategory = false;
-      } else {
-        _currentCategory = category;
-        _newCategory = true;
-      }
+      _currentCategory = category;
     });
   }
 
@@ -109,23 +101,22 @@ class _CategoryScreenState extends State<CategoryScreen> {
       frontPanel: ConverterScreen(
         units: _currentCategory.units,
         color: _currentCategory.color,
-        newCategory: _newCategory,
       ),
     );
   }
 
   Widget _buildInitialScreen() {
     return Scaffold(
+      backgroundColor: _backgroundColor,
+      appBar: AppBar(
         backgroundColor: _backgroundColor,
-        appBar: AppBar(
-          backgroundColor: _backgroundColor,
-          title: Center(
-            child: Text(
-              'Select a Category',
-            ),
+        title: Center(
+          child: Text(
+            'Select a Category',
           ),
         ),
-        body: _buildBackPanel(),
+      ),
+      body: _buildBackPanel(),
     );
   }
 
