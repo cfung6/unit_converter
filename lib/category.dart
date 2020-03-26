@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:unitconverter/converter_screen.dart';
 import 'package:unitconverter/unit.dart';
 
 class Category extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String name;
   final ColorSwatch color;
   final List<Unit> units;
@@ -37,10 +36,7 @@ class Category extends StatelessWidget {
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Icon(
-                      icon,
-                      size: 60.0,
-                    ),
+                    child: Image.asset(icon, width: 60,),
                   ),
                 ),
                 Center(

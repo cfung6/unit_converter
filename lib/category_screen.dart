@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:unitconverter/converter_screen.dart';
@@ -12,16 +15,27 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
-  final Map<String, IconData> _categories = {
-    'Length': Icons.cake,
-    'Area': Icons.cake,
-    'Volume': Icons.cake,
-    'Mass': Icons.cake,
-    'Time': Icons.cake,
-    'Digital Storage': Icons.cake,
-    'Energy': Icons.cake,
-    'Currency': Icons.cake,
-  };
+//  final Map<String, IconData> _categories = {
+//    'Length': Icons.cake,
+//    'Area': Icons.cake,
+//    'Volume': Icons.cake,
+//    'Mass': Icons.cake,
+//    'Time': Icons.cake,
+//    'Digital Storage': Icons.cake,
+//    'Energy': Icons.cake,
+//    'Currency': Icons.cake,
+//  };
+
+  static const _icons = <String>[
+    'assets/images/length.png',
+    'assets/images/area.png',
+    'assets/images/volume.png',
+    'assets/images/mass.png',
+    'assets/images/time.png',
+    'assets/images/digital_storage.png',
+    'assets/images/power.png',
+    'assets/images/currency.png',
+  ];
 
   static const _baseColors = <ColorSwatch>[
     ColorSwatch(0xFF6AB7A8, {
@@ -63,17 +77,50 @@ class _CategoryScreenState extends State<CategoryScreen> {
   final Color _backgroundColor = Colors.lightBlue[100];
   Category _currentCategory;
 
+//  @override
+//  void initState() {
+//    super.initState();
+//    for (String category in _categories.keys) {
+//      _categoryList.add(Category(
+//        category,
+//        _categories[category],
+//        _baseColors[_categoryList.length % _baseColors.length],
+//        _retrieveUnitList(category),
+//        _changeCurrentCategory,
+//      ));
+//    }
+//  }
+
   @override
-  void initState() {
-    super.initState();
-    for (String category in _categories.keys) {
-      _categoryList.add(Category(
-        category,
-        _categories[category],
-        _baseColors[_categoryList.length % _baseColors.length],
-        _retrieveUnitList(category),
-        _changeCurrentCategory,
-      ));
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (_categoryList.isEmpty) {
+      await _retrieveLocalCategories();
+    }
+  }
+
+  Future<void> _retrieveLocalCategories() async {
+    final json = DefaultAssetBundle.of(context)
+        .loadString('assets/data/regular_units.json');
+    final data = JsonDecoder().convert(await json);
+    if (data is! Map) {
+      throw ('Data retrieved from API is not a Map');
+    }
+
+    for (String category in data.keys) {
+      List<Unit> units = data[category]
+          .map<Unit>((dynamic unitData) => Unit.fromJson(unitData))
+          .toList();
+
+      setState(() {
+        _categoryList.add(Category(
+          category,
+          _icons[_categoryList.length],
+          _baseColors[_categoryList.length % _baseColors.length],
+          units,
+          _changeCurrentCategory,
+        ));
+      });
     }
   }
 
@@ -145,13 +192,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
-  List<Unit> _retrieveUnitList(String categoryName) {
-    return List.generate(10, (index) {
-      index += 1;
-      return Unit(
-        name: '$categoryName Unit $index',
-        conversion: index.toDouble(),
-      );
-    });
-  }
+//  List<Unit> _retrieveUnitList(String categoryName) {
+//    return List.generate(10, (index) {
+//      index += 1;
+//      return Unit(
+//        name: '$categoryName Unit $index',
+//        conversion: index.toDouble(),
+//      );
+//    });
+//  }
 }

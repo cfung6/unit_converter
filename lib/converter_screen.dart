@@ -44,12 +44,39 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return OrientationBuilder(
+      builder: (_, orientation) {
+        return orientation == Orientation.portrait ?
+        _buildPortrait() :
+        _buildLandscape();
+      },
+    );
+  }
+
+  Widget _buildPortrait() {
+    return ListView(
       children: <Widget>[
         _buildInput(),
         _buildArrow(),
         _buildOutput(),
       ],
+    );
+  }
+
+  Widget _buildLandscape() {
+    return SingleChildScrollView(
+      child: Center(
+        child: Container(
+          width: 450,
+          child: Column(
+            children: <Widget>[
+              _buildInput(),
+              _buildArrow(),
+              _buildOutput(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
