@@ -6,14 +6,13 @@ class Category extends StatelessWidget {
   final String icon;
   final String name;
   final ColorSwatch color;
-  final List<Unit> units;
+  List<Unit> units;
   final ValueChanged<Category> onTap;
 
-  const Category(this.name, this.icon, this.color, this.units, this.onTap)
+  Category(this.name, this.icon, this.color, this.units, this.onTap)
       : assert(name != null),
         assert(icon != null),
         assert(color != null),
-        assert(units != null),
         assert(onTap != null);
 
   @override
@@ -36,7 +35,10 @@ class Category extends StatelessWidget {
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Image.asset(icon, width: 60,),
+                    child: Image.asset(
+                      icon,
+                      width: 60,
+                    ),
                   ),
                 ),
                 Center(

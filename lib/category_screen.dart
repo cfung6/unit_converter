@@ -124,14 +124,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
       });
     }
 
-    List<Unit> currencies = await CurrencyConverter().getCurrencies();
-
     setState(() {
       _categoryList.add(Category(
         'Currency',
         'assets/images/currency.png',
         _baseColors[_categoryList.length % _baseColors.length],
-        currencies,
+        null,
         _changeCurrentCategory,
       ));
     });
@@ -142,7 +140,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
     if (_currentCategory == null) {
       return _buildInitialScreen();
     } else {
-      return _buildBackDrop();
+      return _currentCategory.units == null
+          ? _buildFutureBackDrop()
+          : _buildBackDrop();
     }
   }
 
@@ -150,6 +150,27 @@ class _CategoryScreenState extends State<CategoryScreen> {
     setState(() {
       _currentCategory = category;
     });
+  }
+
+  Widget _buildFutureBackDrop() {
+    return FutureBuilder(
+      future: CurrencyConverter().getCurrencies(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          _currentCategory.units = snapshot.data;
+          return _buildBackDrop();
+        } else {
+          return Container(
+            color: _currentCategory.color,
+            child: Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 
   Widget _buildBackDrop() {

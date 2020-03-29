@@ -46,9 +46,9 @@ class _ConverterScreenState extends State<ConverterScreen> {
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (_, orientation) {
-        return orientation == Orientation.portrait ?
-        _buildPortrait() :
-        _buildLandscape();
+        return orientation == Orientation.portrait
+            ? _buildPortrait()
+            : _buildLandscape();
       },
     );
   }
