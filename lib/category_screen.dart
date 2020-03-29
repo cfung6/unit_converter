@@ -16,17 +16,6 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
-//  final Map<String, IconData> _categories = {
-//    'Length': Icons.cake,
-//    'Area': Icons.cake,
-//    'Volume': Icons.cake,
-//    'Mass': Icons.cake,
-//    'Time': Icons.cake,
-//    'Digital Storage': Icons.cake,
-//    'Energy': Icons.cake,
-//    'Currency': Icons.cake,
-//  };
-
   static const _icons = <String>[
     'assets/images/length.png',
     'assets/images/area.png',
@@ -129,7 +118,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         'Currency',
         'assets/images/currency.png',
         _baseColors[_categoryList.length % _baseColors.length],
-        null,
+        [],
         _changeCurrentCategory,
       ));
     });
@@ -140,7 +129,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     if (_currentCategory == null) {
       return _buildInitialScreen();
     } else {
-      return _currentCategory.units == null
+      return _currentCategory.units.isEmpty
           ? _buildFutureBackDrop()
           : _buildBackDrop();
     }
@@ -157,6 +146,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
       future: CurrencyConverter().getCurrencies(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return _buildErrorBackDrop();
+          }
           _currentCategory.units = snapshot.data;
           return _buildBackDrop();
         } else {
@@ -182,6 +174,51 @@ class _CategoryScreenState extends State<CategoryScreen> {
       frontPanel: ConverterScreen(
         units: _currentCategory.units,
         color: _currentCategory.color,
+      ),
+    );
+  }
+
+  Widget _buildErrorBackDrop() {
+    return Backdrop(
+      currentCategory: _currentCategory,
+      backTitle: Text('Select a Category'),
+      frontTitle: Text(_currentCategory.name),
+      backPanel: _buildBackPanel(),
+      frontPanel: _buildErrorUI(),
+    );
+  }
+
+  Widget _buildErrorUI() {
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.error_outline,
+              size: 180.0,
+              color: Colors.white,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              "Can't connect right now!",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 30,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

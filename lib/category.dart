@@ -13,6 +13,7 @@ class Category extends StatelessWidget {
       : assert(name != null),
         assert(icon != null),
         assert(color != null),
+        assert(units != null),
         assert(onTap != null);
 
   @override
