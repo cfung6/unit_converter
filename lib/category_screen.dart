@@ -8,6 +8,7 @@ import 'package:unitconverter/unit.dart';
 
 import 'backdrop.dart';
 import 'category.dart';
+import 'currency_converter.dart';
 
 class CategoryScreen extends StatefulWidget {
   @override
@@ -122,6 +123,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
         ));
       });
     }
+
+    List<Unit> currencies = await CurrencyConverter().getCurrencies();
+
+    setState(() {
+      _categoryList.add(Category(
+        'Currency',
+        'assets/images/currency.png',
+        _baseColors[_categoryList.length % _baseColors.length],
+        currencies,
+        _changeCurrentCategory,
+      ));
+    });
   }
 
   @override
